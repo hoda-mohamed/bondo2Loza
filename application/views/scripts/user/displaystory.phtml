@@ -1,0 +1,147 @@
+<br /><br />
+<!DOCTYPE html>
+<!-- Website template by freewebsitetemplates.com -->
+<html>
+    
+    <body>
+        
+        <div id="content">
+            <canvas id="mysandbox" style="border:1px solid #000000;" width="1200"  height="400">
+
+            </canvas>
+        </div>
+
+
+        <script type='text/javascript'>
+
+            function Sprite(image, frames, x, y) {
+                this.image = image;
+                console.log(this.image.height / 4);
+                this.frames = frames;
+                this.w = image.width / frames;
+                this.h = image.height / 4 - 55;
+                this.x = x || 0;
+                this.y = y || 0;
+                this.level = 0;
+                this.frameLevel = 0;
+                this.currentFrame = 0;
+
+                this.nextFrame = function() {
+                    this.currentFrame++;
+                    //this.currentFrame %= this.frames;
+                    if (this.currentFrame == 9) {
+                        this.currentFrame = 0;
+                        this.frameLevel += this.h;
+                        this.level++;
+                    }
+
+
+                    if (this.level == 3) {
+                        if (this.currentFrame == 8) {
+                            this.currentFrame = 0;
+                            this.frameLevel = 0;
+                            this.level = 0;
+                        }
+                    }
+                }
+
+                this.render = function() {
+                    this.nextFrame();
+                }
+            }
+
+            /*************************Down*****************************/
+
+            function renderAnimationDown() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                for (var i = 0; i < sprites.length; i++) {
+                    var s = sprites[i];
+
+                    s.y += 10;
+                    if (s.y > 350) {
+                        s.y = 0;
+                    }
+
+                    s.render();
+                    ctx.drawImage(s.image,
+                            s.currentFrame * s.w, 0,
+                            s.w, s.h,
+                            s.x, s.y,
+                            s.w / 5, s.h / 5);
+                }
+            }
+
+
+            /*************************UP*****************************/
+
+            function renderAnimationUp() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                for (var i = 0; i < sprites.length; i++) {
+                    var s = sprites[i];
+
+                    s.y -= 10;
+                    if (s.y < 0) {
+                        s.y = 300;
+                    }
+
+
+                    s.render();
+                    ctx.drawImage(s.image,
+                            s.currentFrame * s.w, 0,
+                            s.w, s.h,
+                            s.x, s.y,
+                            s.w / 4, s.h / 4);
+                }
+            }
+
+
+            /*************************Down*****************************/
+
+            function renderAnimationRight() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                for (var i = 0; i < sprites.length; i++) {
+                    var s = sprites[i];
+
+                    s.x -= 5;
+                    if (s.x < 0) {
+                        s.x = 400;
+                    }
+
+                    s.render();
+                    ctx.drawImage(s.image,
+                            s.currentFrame * s.w, s.frameLevel,
+                            s.w, s.h,
+                            s.x, s.y,
+                            s.w / 5, s.h / 5);
+                }
+            }
+
+            /*************************create animation object*****************************/
+            function addSprite() {
+                var s = new Sprite(im, 9, 100, 100);
+                //s.render;
+                sprites.push(s);
+            }
+
+
+            var canvas = document.getElementById("mysandbox");
+            var ctx = canvas.getContext('2d');
+
+            var sprites = [];
+            var im = new Image();
+
+            im.src = '<?= $this->baseUrl() ?>/images/BondokWalkingSmooth.png';
+
+            im.onload = function() {
+                addSprite();
+                setInterval(renderAnimationRight, 30);
+            }
+
+
+        </script>
+
+    </body>
+</html>
